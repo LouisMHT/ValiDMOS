@@ -3,7 +3,11 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 from tkinter.font import Font
 from PIL import Image, ImageTk
-from tkinter import PhotoImage
+from tkinter import filedialog, messagebox
+import fitz  # PyMuPDF
+import easyocr
+import io
+import numpy as np
 
 # Fonction pour basculer entre les frames
 def show_frame(frame):
@@ -61,6 +65,7 @@ label2.place(relx=0.5, anchor='center', y=460)
 
 
 
+
 # Charger une image avec PIL
 image_path2 = "logopdf.png"
 image2 = Image.open(image_path2)
@@ -75,15 +80,103 @@ image_label2.place(x=363, y=50)
 label3 = ttk.Label(frame2, text="Sélectionner le fichier pdf", font=custom_font, background="white")
 label3.place(relx=0.5, anchor='center', y=220)
 
+
+def ouvrir_fichier():
+    global chemin_fichier
+    # Ouvre la boîte de dialogue pour sélectionner un fichier
+    chemin_fichier = filedialog.askopenfilename(
+        title="Sélectionner un fichier",
+        filetypes=[("Tous les fichiers", "*.*"), ("Fichiers texte", "*.txt")]
+    )
+    # Affiche le chemin du fichier sélectionné
+    label_fichier.config(text=chemin_fichier if chemin_fichier else "Aucun fichier sélectionné")
+
+chemin_fichier = None
+
+def valider():
+    # Vérifie si un fichier a été sélectionné
+    if not chemin_fichier:
+        # Affiche un message d'erreur si aucun fichier n'a été sélectionné
+        messagebox.showerror("Erreur", "Veuillez sélectionner un fichier avant de valider.")
+    else:
+        show_frame(frame3)
+        utiliser_fichier()
+
+
+def utiliser_fichier():
+    global chemin_fichier
+    if frame3.winfo_ismapped():
+        print("Frame 3 affichée")
+        root.after(3000, lambda: scan(chemin_fichier))
+
+def scan(chemin_fichier):
+    try:
+        # Initialiser le lecteur easyocr pour la langue française
+        reader = easyocr.Reader(['fr'])
+
+        # Ouvrir le PDF
+        pdf_path = chemin_fichier
+        document = fitz.open(pdf_path)
+
+        # Variable pour regrouper toutes les informations extraites
+        all_texts = []
+
+        # Sélectionner la page (ici la première page, index 0)
+        page = document[0]
+
+        # Extraire l'image de la page
+        image_list = page.get_images(full=True)
+        for img_index, img in enumerate(image_list, start=1):
+            xref = img[0]
+            base_image = document.extract_image(xref)
+            image_bytes = base_image["image"]
+
+            # Convertir l'image en format PIL
+            image = Image.open(io.BytesIO(image_bytes))
+
+            # Convertir l'image PIL en tableau de pixels
+            image_np = np.array(image)
+
+            # Utiliser easyocr pour effectuer l'OCR
+            result = reader.readtext(image_np, detail=0)  # detail=0 pour obtenir seulement le texte
+
+            # Regrouper le texte extrait dans une seule variable
+            extracted_text = " ".join(result)
+            all_texts.append(extracted_text)
+
+        # Fermer le document PDF
+        document.close()
+
+        # Afficher toutes les informations extraites
+        all_extracted_text = " ".join(all_texts)
+        print("Texte extrait de toutes les images:\n", all_extracted_text)
+    except Exception as e:
+        pass
+
+
+
+
+# Crée un bouton pour ouvrir la boîte de dialogue de sélection de fichier
+bouton_ouvrir = ttk.Button(frame2, text="Ouvrir un fichier", command=ouvrir_fichier)
+bouton_ouvrir.place(relx=0.5, anchor='center', y=315)
+
+# Crée un label pour afficher le chemin du fichier sélectionné
+label_fichier = ttk.Label(frame2, text="Aucun fichier sélectionné")
+label_fichier.place(relx=0.5, anchor='center', y=260)
+
+# Crée un bouton pour valider la sélection
+button3 = ttk.Button(frame2, text="Valider", command=valider, style="TButton")
+button3.place(x=745, y=420)
+
 button2 = ttk.Button(frame2, text="Retour", command=lambda: show_frame(frame1), style="TButton")
 button2.place(x=25, y=420)
 
-button3 = ttk.Button(frame2, text="Valider", command=lambda: show_frame(frame3), style="TButton")
-button3.place(relx=0.5, anchor='center', y=315)
+label5 = ttk.Label(frame2, text="L'application ne prend en charge que les DMOS d'une seule page.", font=custom_font2, foreground="grey", background="white")
+label5.place(relx=0.5, anchor='center', y=360)
+
 
 label4 = ttk.Label(frame2, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
 label4.place(relx=0.5, anchor='center', y=460)
-
 
 
 
@@ -124,6 +217,9 @@ button4.place(x=25, y=420)
 
 label6 = ttk.Label(frame3, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
 label6.place(relx=0.5, anchor='center', y=460)
+
+label8 = ttk.Label(frame3, text="Le scan est en cours. L'application peut se figer pendant une minute. Merci de patienter.", font=custom_font2, foreground="grey", background="white")
+label8.place(relx=0.5, anchor='center', y=350)
 
 label7 = ttk.Label(frame3, text="Scan en cours...", font=custom_font, background="white")
 label7.place(relx=0.5, anchor='center', y=170)
