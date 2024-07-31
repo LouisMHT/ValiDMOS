@@ -109,8 +109,12 @@ def utiliser_fichier():
         print("Frame 3 affichée")
         root.after(3000, lambda: scan(chemin_fichier))
 
+all_extracted_text = ""
+
 def scan(chemin_fichier):
+    global all_extracted_text
     try:
+        """
         # Initialiser le lecteur easyocr pour la langue française
         reader = easyocr.Reader(['fr'])
 
@@ -146,12 +150,20 @@ def scan(chemin_fichier):
 
         # Fermer le document PDF
         document.close()
-
+        
         # Afficher toutes les informations extraites
         all_extracted_text = " ".join(all_texts)
+        """
         print("Texte extrait de toutes les images:\n", all_extracted_text)
+        utiliser_text()
     except Exception as e:
         pass
+
+def utiliser_text():
+    global all_extracted_text
+    print("Texte extrait de toutes les images:\n", all_extracted_text)
+    display_pdf_in_frame()
+    root.after(3000, lambda: show_frame(frame4))
 
 
 
@@ -223,6 +235,41 @@ label8.place(relx=0.5, anchor='center', y=350)
 
 label7 = ttk.Label(frame3, text="Scan en cours...", font=custom_font, background="white")
 label7.place(relx=0.5, anchor='center', y=170)
+
+
+
+
+def display_pdf_in_frame():
+    try:
+        pdf_path = chemin_fichier
+        # Ouvrir le PDF
+        document = fitz.open(pdf_path)
+
+        # Sélectionner la page spécifiée
+        page = document[0]
+
+        # Extraire l'image de la page
+        pix = page.get_pixmap()
+        img_bytes = pix.tobytes()
+        img = Image.open(io.BytesIO(img_bytes))
+
+        # Fermer le document PDF
+        document.close()
+        img = img.resize((300, 427))
+        # Convertir l'image PIL en ImageTk
+        img_tk = ImageTk.PhotoImage(img)
+
+        # Ajouter l'image à un widget Label dans le frame
+        label = tk.Label(frame4, image=img_tk)
+        label.image = img_tk  # Garder une référence à l'image pour éviter le garbage collection
+        label.place(x=25, y=25)
+
+    except Exception as e:
+        print(f"Erreur lors de l'extraction et de l'affichage de l'image: {e}")
+
+
+
+
 
 
 show_frame(frame1)
