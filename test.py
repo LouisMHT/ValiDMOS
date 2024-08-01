@@ -114,7 +114,7 @@ all_extracted_text = ""
 def scan(chemin_fichier):
     global all_extracted_text
     try:
-        """
+
         # Initialiser le lecteur easyocr pour la langue française
         reader = easyocr.Reader(['fr'])
 
@@ -153,7 +153,7 @@ def scan(chemin_fichier):
         
         # Afficher toutes les informations extraites
         all_extracted_text = " ".join(all_texts)
-        """
+
         print("Texte extrait de toutes les images:\n", all_extracted_text)
         utiliser_text()
     except Exception as e:
