@@ -8,6 +8,30 @@ import fitz  # PyMuPDF
 import easyocr
 import io
 import numpy as np
+import re
+
+
+Imputation = ''
+QMOS = ''
+ProcedeSoudage = ''
+Diametre = ''
+TypeJoint = ''
+Pression = ''
+Epaisseur = ''
+Norme = ''
+Courant = ''
+Passes = ''
+Meulage = ''
+Etuvage = ''
+Chanfrein = ''
+Oxycoupage = ''
+Sechage = ''
+Prechauffage = ''
+TemperatureEntrePasses = ''
+Type = ''
+Longueur = ''
+
+
 
 # Fonction pour basculer entre les frames
 def show_frame(frame):
@@ -38,6 +62,7 @@ frame5.place(x=0, y=0, relwidth=1, relheight=1)
 
 custom_font = Font(family="Calibri", size=16, weight="bold")
 custom_font2 = Font(family="Calibri", size=10, weight="bold", slant="italic")
+custom_font3 = Font(family="Calibri", size=10, weight="bold")
 
 
 
@@ -165,6 +190,182 @@ def utiliser_text():
     display_pdf_in_frame()
     root.after(3000, lambda: show_frame(frame4))
 
+def utiliser_text():
+    global all_extracted_text
+    print("Texte extrait de toutes les images:\n", all_extracted_text)
+    data = all_extracted_text
+    display_pdf_in_frame()
+    root.after(3000, lambda: show_frame(frame4))
+    # Initialiser les variables globales
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+
+    # Liste des mots-clés
+    keywords = ['DESCRIPTIF', 'Imputation', 'DMOS', 'Adresse', 'Elément', 'QMOS', 'Nature', 'Fabricant', 'Nuance', 'Grou',
+                'Procédé', 'extérieur', 'Type', 'Pression', 'Epaisseur', 'Norme', 'Schéma', 'Disposition', 'Mode', 'Meulage',
+                'Etuvage', 'Coordonnateur', 'Chanfrein', 'Oxycoupage', 'Conditions', 'Séchage', 'Température', 'Temperature',
+                'Direction', 'Moyen', 'Moven', 'Longueur', 'Autre', 'Passe', '%', 'Paramètre', 'CC']
+
+    # Créer un motif d'expression régulière pour séparer aux mots-clés
+    pattern = r'({})'.format('|'.join(keywords))
+
+    # Diviser la chaîne en sections basées sur les mots-clés
+    sections = re.split(pattern, data)
+
+    # Initialiser des variables pour stocker les sections
+    current_section = ""
+    sections_list = []
+
+    for i, part in enumerate(sections):
+        if part in keywords:
+            if current_section:
+                sections_list.append(current_section.strip())
+            current_section = part
+        else:
+            current_section += part
+
+    # Ajouter la dernière section si elle existe
+    if current_section:
+        sections_list.append(current_section.strip())
+
+    # Liste des mots-clés à rechercher
+    keywords_to_remove = ['GRDF', 'Intensité', 'Elément', 'Fabricant', 'Grou', 'Schéma', 'Direction', 'Moyen', 'Moven',
+                          'Autre', 'Paramètre', 'Passe', '415', '425', 'enrobage', 'DESCRIPTIF', 'DMOS', 'Adresse',
+                          'Mode', 'Conditions', 'Nature', 'Coordonnateur', 'Disposition', 'courant']
+
+    # Utiliser une liste de compréhension pour filtrer les chaînes
+    cleaned_data_list = [
+        data for data in sections_list
+        if not any(keyword in data for keyword in keywords_to_remove)
+    ]
+
+    def modify_string(data, keywords, attribute_name, slice_index):
+        global_vars = globals()
+        if any(keyword in data for keyword in keywords):
+            global_vars[attribute_name] = data[slice_index:]
+            return data[slice_index:]
+        return data
+
+    modifications = [
+        (['Imputation'], 'Imputation', 16),
+        (['QMOS'], 'QMOS', 18),
+        (['Procédé'], 'ProcedeSoudage', 19),
+        (['extérieur'], 'Diametre', 10),
+        (['joint'], 'TypeJoint', 14),
+        (['Pression'], 'Pression', 29),
+        (['Epaisseur'], 'Epaisseur', 10),
+        (['Norme'], 'Norme', 13),
+        (['CC'], 'Courant', (-12)),
+        (['%'], 'Passes', 2),
+        (['Meulage'], 'Meulage', 8),
+        (['Etuvage'], 'Etuvage', 23),
+        (['Chanfrein'], 'Chanfrein', 20),
+        (['Oxycoupage'], 'Oxycoupage', 11),
+        (['Séchage'], 'Sechage', 23),
+        (['préchauffage'], 'Prechauffage', 33),
+        (['passes'], 'TemperatureEntrePasses', 30),
+        (['Type'], 'Type', 5),
+        (['Longueur'], 'Longueur', 68),
+    ]
+
+    for keywords, attribute_name, slice_index in modifications:
+        cleaned_data_list = [modify_string(data, keywords, attribute_name, slice_index) for data in cleaned_data_list]
+    print(Imputation)
+    #labels
+
+    label32 = ttk.Label(frame4, text=QMOS, font=custom_font3, background="white")
+    label32.place(x=560, y=70)
+
+    label33 = ttk.Label(frame4, text=Imputation, font=custom_font3, background="white")
+    label33.place(x=560, y=50)
+
+    label34 = ttk.Label(frame4, text=ProcedeSoudage, font=custom_font3, background="white")
+    label34.place(x=560, y=90)
+
+    label35 = ttk.Label(frame4, text=TypeJoint, font=custom_font3, background="white")
+    label35.place(x=560, y=110)
+
+    label36 = ttk.Label(frame4, text=Pression, font=custom_font3, background="white")
+    label36.place(x=560, y=130)
+
+    label37 = ttk.Label(frame4, text=Diametre, font=custom_font3, background="white")
+    label37.place(x=560, y=150)
+
+    label38 = ttk.Label(frame4, text=Epaisseur, font=custom_font3, background="white")
+    label38.place(x=560, y=170)
+
+    label39 = ttk.Label(frame4, text=Norme, font=custom_font3, background="white")
+    label39.place(x=560, y=190)
+
+    label40 = ttk.Label(frame4, text=Courant, font=custom_font3, background="white")
+    label40.place(x=560, y=210)
+
+    label41 = ttk.Label(frame4, text=Passes, font=custom_font3, background="white")
+    label41.place(x=560, y=230)
+
+    label42 = ttk.Label(frame4, text=Meulage, font=custom_font3, background="white")
+    label42.place(x=500, y=250)
+
+    label43 = ttk.Label(frame4, text=Etuvage, font=custom_font3, background="white")
+    label43.place(x=750, y=250)
+
+    label44 = ttk.Label(frame4, text=Chanfrein, font=custom_font3, background="white")
+    label44.place(x=500, y=270)
+
+    label45 = ttk.Label(frame4, text=Oxycoupage, font=custom_font3, background="white")
+    label45.place(x=750, y=270)
+
+    label46 = ttk.Label(frame4, text=Sechage, font=custom_font3, background="white")
+    label46.place(x=560, y=290)
+
+    label47 = ttk.Label(frame4, text=Prechauffage, font=custom_font3, background="white")
+    label47.place(x=560, y=310)
+
+    label48 = ttk.Label(frame4, text=TemperatureEntrePasses, font=custom_font3, background="white")
+    label48.place(x=560, y=330)
+
+    label49 = ttk.Label(frame4, text=Type, font=custom_font3, background="white")
+    label49.place(x=560, y=350)
+
+    label50 = ttk.Label(frame4, text=Longueur, font=custom_font3, background="white")
+    label50.place(x=750, y=370)
+
+
+
+
+
+
+
+
+
+
+
+    # Retourner les valeurs extraites
+    return {
+        "Imputation": Imputation,
+        "QMOS": QMOS,
+        "ProcedeSoudage": ProcedeSoudage,
+        "Diametre": Diametre,
+        "TypeJoint": TypeJoint,
+        "Pression": Pression,
+        "Epaisseur": Epaisseur,
+        "Norme": Norme,
+        "Courant": Courant,
+        "Passes": Passes,
+        "Meulage": Meulage,
+        "Etuvage": Etuvage,
+        "Chanfrein": Chanfrein,
+        "Oxycoupage": Oxycoupage,
+        "Sechage": Sechage,
+        "Prechauffage": Prechauffage,
+        "TemperatureEntrePasses": TemperatureEntrePasses,
+        "Type": Type,
+        "Longueur": Longueur
+    }
+
+
+
+
 
 
 
@@ -224,8 +425,7 @@ label5.place(relx=0.5, anchor='center', y=220)
 frame3.after(0, update_frame, 0)
 
 
-button4 = ttk.Button(frame3, text="Retour", command=lambda: show_frame(frame2), style="TButton")
-button4.place(x=25, y=420)
+
 
 label6 = ttk.Label(frame3, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
 label6.place(relx=0.5, anchor='center', y=460)
@@ -267,8 +467,108 @@ def display_pdf_in_frame():
     except Exception as e:
         print(f"Erreur lors de l'extraction et de l'affichage de l'image: {e}")
 
+button4 = ttk.Button(frame4, text="Retour", command=lambda: show_frame(frame2), style="TButton")
+button4.place(x=350, y=400)
+
+label9 = ttk.Label(frame4, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
+label9.place(relx=0.5, anchor='center', y=460)
+
+button5 = ttk.Button(frame4, text="Valider", command=lambda: show_frame(frame5), style="TButton")
+button5.place(x=745, y=400)
 
 
+label13 = ttk.Label(frame4, text="DESCRIPTIF DE MODE OPERATOIRE DE SOUDAGE", font=custom_font, background="white")
+label13.place(x=380, y=20)
+
+label14 = ttk.Label(frame4, text="QMOS de Référence", font=custom_font3, foreground="grey", background="white")
+label14.place(x=360, y=70)
+
+label12 = ttk.Label(frame4, text="Imputation/EOTP", font=custom_font3, foreground="grey", background="white")
+label12.place(x=360, y=50)
+
+label15 = ttk.Label(frame4, text="Procédé de Soudage", font=custom_font3, foreground="grey", background="white")
+label15.place(x=360, y=90)
+
+label16 = ttk.Label(frame4, text="Type de Joint", font=custom_font3, foreground="grey", background="white")
+label16.place(x=360, y=110)
+
+label17 = ttk.Label(frame4, text="Pression maximale de service", font=custom_font3, foreground="grey", background="white")
+label17.place(x=360, y=130)
+
+label18 = ttk.Label(frame4, text="Diamètre extérieur", font=custom_font3, foreground="grey", background="white")
+label18.place(x=360, y=150)
+
+label19 = ttk.Label(frame4, text="Epaisseur", font=custom_font3, foreground="grey", background="white")
+label19.place(x=360, y=170)
+
+label20 = ttk.Label(frame4, text="Norme", font=custom_font3, foreground="grey", background="white")
+label20.place(x=360, y=190)
+
+label21 = ttk.Label(frame4, text="Type de courant", font=custom_font3, foreground="grey", background="white")
+label21.place(x=360, y=210)
+
+label22 = ttk.Label(frame4, text="Passes", font=custom_font3, foreground="grey", background="white")
+label22.place(x=360, y=230)
+
+label23 = ttk.Label(frame4, text="Meulage", font=custom_font3, foreground="grey", background="white")
+label23.place(x=360, y=250)
+
+label24 = ttk.Label(frame4, text="Etuvage des électrodes", font=custom_font3, foreground="grey", background="white")
+label24.place(x=560, y=250)
+
+label25 = ttk.Label(frame4, text="Chanfrein d'origine", font=custom_font3, foreground="grey", background="white")
+label25.place(x=360, y=270)
+
+label26 = ttk.Label(frame4, text="Oxycoupage", font=custom_font3, foreground="grey", background="white")
+label26.place(x=560, y=270)
+
+label27 = ttk.Label(frame4, text="Séchage / dégourdissage", font=custom_font3, foreground="grey", background="white")
+label27.place(x=360, y=290)
+
+label28 = ttk.Label(frame4, text="Température de préchauffage", font=custom_font3, foreground="grey", background="white")
+label28.place(x=360, y=310)
+
+label29 = ttk.Label(frame4, text="Température entre passes", font=custom_font3, foreground="grey", background="white")
+label29.place(x=360, y=330)
+
+label30 = ttk.Label(frame4, text="Type", font=custom_font3, foreground="grey", background="white")
+label30.place(x=360, y=350)
+
+label31 = ttk.Label(frame4, text="Longueur minimale soudée avant le retrait du dispositif d'accostage", font=custom_font3, foreground="grey", background="white")
+label31.place(x=360, y=370)
+
+
+
+
+
+
+# Charger une image avec PIL
+image_path3 = "logoexcel.png"
+image3 = Image.open(image_path3)
+image3 = image3.resize((200, 200))
+photo3 = ImageTk.PhotoImage(image3)
+
+# Ajouter l'image à la première frame
+image_label3 = tk.Label(frame5, image=photo3, bg="white")
+image_label3.place(x=327, y=20)
+
+
+# Ajouter un label et un bouton
+label11 = ttk.Label(frame5, text="Télécharger le fichier Excel du DMOS", font=custom_font, background="white")
+label11.place(relx=0.5, anchor='center', y=230)
+
+button8 = ttk.Button(frame5, text="Télécharger", command=lambda: show_frame(frame5), style="TButton")
+button8.place(relx=0.5, anchor='center', y=300)
+
+
+button6 = ttk.Button(frame5, text="Retour", command=lambda: show_frame(frame4), style="TButton")
+button6.place(x=25, y=420)
+
+button7 = ttk.Button(frame5, text="Quitter", command=lambda: show_frame(frame5), style="TButton")
+button7.place(x=745, y=420)
+
+label10 = ttk.Label(frame5, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
+label10.place(relx=0.5, anchor='center', y=460)
 
 
 
