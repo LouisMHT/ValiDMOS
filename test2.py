@@ -1,39 +1,35 @@
-import re
+import tkinter as tk
+import sys
+import io
 
-# Exemple de liste de chaînes de caractères
-data_list = [
-    """
-    Nom: Alice
-    Âge: 30
-    Poste: Ingénieur
-    """,
-    """
-    Nom: Bob
-    Âge: 25
-    Poste: Designer
-    """,
-    """
-    Nom: Carol
-    Âge: 40
-    Poste: Manager
-    """
-]
+# Fonction pour rediriger la sortie vers le widget Text
+class RedirectText(io.StringIO):
+    def __init__(self, widget):
+        super().__init__()
+        self.widget = widget
 
-# Liste des mots-clés à supprimer
-keywords_to_remove = ['Âge']
+    def write(self, text):
+        self.widget.insert(tk.END, text)
+        self.widget.see(tk.END)  # Faire défiler vers le bas si nécessaire
 
-# Créer un motif d'expression régulière pour les mots-clés à supprimer
-pattern_remove = r'\b(?:' + '|'.join(re.escape(keyword) for keyword in keywords_to_remove) + r'):\s*.*?\n'
+# Création de la fenêtre principale
+root = tk.Tk()
+root.title("Affichage de la sortie")
 
-# Initialiser une liste pour stocker les résultats nettoyés
-cleaned_data_list = []
+# Création du widget Text
+text_widget = tk.Text(root, wrap=tk.WORD)
+text_widget.pack(expand=True, fill='both')
 
-# Appliquer le nettoyage à chaque chaîne de la liste
-for data in data_list:
-    cleaned_data = re.sub(pattern_remove, '', data)
-    cleaned_data_list.append(cleaned_data.strip())
+# Redirection de sys.stdout vers le widget Text
+sys.stdout = RedirectText(text_widget)
 
-# Afficher les résultats nettoyés
-for cleaned_data in cleaned_data_list:
-    print(cleaned_data)
+# Exemple de texte imprimé
+print("Ceci est un test.")
+print("Voici une autre ligne.")
 
+# Ajout d'un bouton pour fermer la fenêtre
+button = tk.Button(root, text="Fermer", command=root.quit)
+button.pack()
+
+# Démarrer la boucle principale de Tkinter
+root.mainloop()
