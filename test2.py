@@ -1,35 +1,19 @@
-import tkinter as tk
-import sys
-import io
+# Déclaration de la variable globale
+reste_chaine = ""
 
-# Fonction pour rediriger la sortie vers le widget Text
-class RedirectText(io.StringIO):
-    def __init__(self, widget):
-        super().__init__()
-        self.widget = widget
+def traiter_chaine(data):
+    global reste_chaine
+    # Supposons que nous voulons conserver seulement les 10 premiers caractères
+    # et mettre le reste dans la variable globale
+    premiers_dix_caracteres = data[:10]
+    reste_chaine = data[10:]
 
-    def write(self, text):
-        self.widget.insert(tk.END, text)
-        self.widget.see(tk.END)  # Faire défiler vers le bas si nécessaire
+    print(f"Premiers dix caractères : {premiers_dix_caracteres}")
+    print(f"Reste de la chaîne : {reste_chaine}")
 
-# Création de la fenêtre principale
-root = tk.Tk()
-root.title("Affichage de la sortie")
+# Exemple d'utilisation
+data = "Voici une chaîne de caractères longue."
+traiter_chaine(data)
 
-# Création du widget Text
-text_widget = tk.Text(root, wrap=tk.WORD)
-text_widget.pack(expand=True, fill='both')
-
-# Redirection de sys.stdout vers le widget Text
-sys.stdout = RedirectText(text_widget)
-
-# Exemple de texte imprimé
-print("Ceci est un test.")
-print("Voici une autre ligne.")
-
-# Ajout d'un bouton pour fermer la fenêtre
-button = tk.Button(root, text="Fermer", command=root.quit)
-button.pack()
-
-# Démarrer la boucle principale de Tkinter
-root.mainloop()
+# Affichage du reste de la chaîne après l'appel de la fonction
+print(f"Variable globale 'reste_chaine' après appel de la fonction : {reste_chaine}")
