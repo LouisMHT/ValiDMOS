@@ -10,7 +10,6 @@ import io
 import numpy as np
 import re
 
-
 Imputation = ''
 QMOS = ''
 ProcedeSoudage = ''
@@ -273,64 +272,62 @@ def utiliser_text():
     print(Imputation)
     #labels
 
-    label32 = ttk.Label(frame4, text=QMOS, font=custom_font3, background="white")
-    label32.place(x=560, y=70)
+    label32 = ttk.Label(frame4, text=Imputation, font=custom_font3, background="white")
+    label32.place(x=725, y=40)
 
-    label33 = ttk.Label(frame4, text=Imputation, font=custom_font3, background="white")
-    label33.place(x=560, y=50)
+    label33 = ttk.Label(frame4, text=QMOS, font=custom_font3, background="white")
+    label33.place(x=480, y=40)
 
     label34 = ttk.Label(frame4, text=ProcedeSoudage, font=custom_font3, background="white")
-    label34.place(x=560, y=90)
+    label34.place(x=560, y=60)
 
     label35 = ttk.Label(frame4, text=TypeJoint, font=custom_font3, background="white")
-    label35.place(x=560, y=110)
+    label35.place(x=560, y=80)
 
     label36 = ttk.Label(frame4, text=Pression, font=custom_font3, background="white")
-    label36.place(x=560, y=130)
+    label36.place(x=560, y=100)
 
     label37 = ttk.Label(frame4, text=Diametre, font=custom_font3, background="white")
-    label37.place(x=560, y=150)
+    label37.place(x=560, y=120)
 
     label38 = ttk.Label(frame4, text=Epaisseur, font=custom_font3, background="white")
-    label38.place(x=560, y=170)
+    label38.place(x=560, y=140)
 
     label39 = ttk.Label(frame4, text=Norme, font=custom_font3, background="white")
-    label39.place(x=560, y=190)
+    label39.place(x=560, y=160)
 
     label40 = ttk.Label(frame4, text=Courant, font=custom_font3, background="white")
-    label40.place(x=560, y=210)
-
-    label41 = ttk.Label(frame4, text=Passes, font=custom_font3, background="white")
-    label41.place(x=560, y=230)
+    label40.place(x=560, y=180)
 
     label42 = ttk.Label(frame4, text=Meulage, font=custom_font3, background="white")
-    label42.place(x=500, y=250)
+    label42.place(x=500, y=200)
 
     label43 = ttk.Label(frame4, text=Etuvage, font=custom_font3, background="white")
-    label43.place(x=750, y=250)
+    label43.place(x=750, y=200)
 
     label44 = ttk.Label(frame4, text=Chanfrein, font=custom_font3, background="white")
-    label44.place(x=500, y=270)
+    label44.place(x=500, y=220)
 
     label45 = ttk.Label(frame4, text=Oxycoupage, font=custom_font3, background="white")
-    label45.place(x=750, y=270)
+    label45.place(x=750, y=220)
 
     label46 = ttk.Label(frame4, text=Sechage, font=custom_font3, background="white")
-    label46.place(x=560, y=290)
+    label46.place(x=560, y=240)
 
     label47 = ttk.Label(frame4, text=Prechauffage, font=custom_font3, background="white")
-    label47.place(x=560, y=310)
+    label47.place(x=560, y=260)
 
     label48 = ttk.Label(frame4, text=TemperatureEntrePasses, font=custom_font3, background="white")
-    label48.place(x=560, y=330)
+    label48.place(x=560, y=280)
 
     label49 = ttk.Label(frame4, text=Type, font=custom_font3, background="white")
-    label49.place(x=560, y=350)
+    label49.place(x=560, y=300)
 
     label50 = ttk.Label(frame4, text=Longueur, font=custom_font3, background="white")
-    label50.place(x=750, y=370)
+    label50.place(x=750, y=320)
 
-
+    label41 = ttk.Label(frame4, text=Passes, font=custom_font3, background="white")
+    label41.place(x=435, y=340)
 
 
 
@@ -468,75 +465,71 @@ def display_pdf_in_frame():
         print(f"Erreur lors de l'extraction et de l'affichage de l'image: {e}")
 
 button4 = ttk.Button(frame4, text="Retour", command=lambda: show_frame(frame2), style="TButton")
-button4.place(x=350, y=400)
-
-label9 = ttk.Label(frame4, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
-label9.place(relx=0.5, anchor='center', y=460)
+button4.place(x=350, y=420)
 
 button5 = ttk.Button(frame4, text="Valider", command=lambda: show_frame(frame5), style="TButton")
-button5.place(x=745, y=400)
+button5.place(x=745, y=420)
 
 
 label13 = ttk.Label(frame4, text="DESCRIPTIF DE MODE OPERATOIRE DE SOUDAGE", font=custom_font, background="white")
-label13.place(x=380, y=20)
+label13.place(x=380, y=10)
 
 label14 = ttk.Label(frame4, text="QMOS de Référence", font=custom_font3, foreground="grey", background="white")
-label14.place(x=360, y=70)
+label14.place(x=360, y=40)
 
 label12 = ttk.Label(frame4, text="Imputation/EOTP", font=custom_font3, foreground="grey", background="white")
-label12.place(x=360, y=50)
+label12.place(x=620, y=40)
 
 label15 = ttk.Label(frame4, text="Procédé de Soudage", font=custom_font3, foreground="grey", background="white")
-label15.place(x=360, y=90)
+label15.place(x=360, y=60)
 
 label16 = ttk.Label(frame4, text="Type de Joint", font=custom_font3, foreground="grey", background="white")
-label16.place(x=360, y=110)
+label16.place(x=360, y=80)
 
 label17 = ttk.Label(frame4, text="Pression maximale de service", font=custom_font3, foreground="grey", background="white")
-label17.place(x=360, y=130)
+label17.place(x=360, y=100)
 
 label18 = ttk.Label(frame4, text="Diamètre extérieur", font=custom_font3, foreground="grey", background="white")
-label18.place(x=360, y=150)
+label18.place(x=360, y=120)
 
 label19 = ttk.Label(frame4, text="Epaisseur", font=custom_font3, foreground="grey", background="white")
-label19.place(x=360, y=170)
+label19.place(x=360, y=140)
 
 label20 = ttk.Label(frame4, text="Norme", font=custom_font3, foreground="grey", background="white")
-label20.place(x=360, y=190)
+label20.place(x=360, y=160)
 
 label21 = ttk.Label(frame4, text="Type de courant", font=custom_font3, foreground="grey", background="white")
-label21.place(x=360, y=210)
-
-label22 = ttk.Label(frame4, text="Passes", font=custom_font3, foreground="grey", background="white")
-label22.place(x=360, y=230)
+label21.place(x=360, y=180)
 
 label23 = ttk.Label(frame4, text="Meulage", font=custom_font3, foreground="grey", background="white")
-label23.place(x=360, y=250)
+label23.place(x=360, y=200)
 
 label24 = ttk.Label(frame4, text="Etuvage des électrodes", font=custom_font3, foreground="grey", background="white")
-label24.place(x=560, y=250)
+label24.place(x=560, y=200)
 
 label25 = ttk.Label(frame4, text="Chanfrein d'origine", font=custom_font3, foreground="grey", background="white")
-label25.place(x=360, y=270)
+label25.place(x=360, y=220)
 
 label26 = ttk.Label(frame4, text="Oxycoupage", font=custom_font3, foreground="grey", background="white")
-label26.place(x=560, y=270)
+label26.place(x=560, y=220)
 
 label27 = ttk.Label(frame4, text="Séchage / dégourdissage", font=custom_font3, foreground="grey", background="white")
-label27.place(x=360, y=290)
+label27.place(x=360, y=240)
 
 label28 = ttk.Label(frame4, text="Température de préchauffage", font=custom_font3, foreground="grey", background="white")
-label28.place(x=360, y=310)
+label28.place(x=360, y=260)
 
 label29 = ttk.Label(frame4, text="Température entre passes", font=custom_font3, foreground="grey", background="white")
-label29.place(x=360, y=330)
+label29.place(x=360, y=280)
 
 label30 = ttk.Label(frame4, text="Type", font=custom_font3, foreground="grey", background="white")
-label30.place(x=360, y=350)
+label30.place(x=360, y=300)
 
 label31 = ttk.Label(frame4, text="Longueur minimale soudée avant le retrait du dispositif d'accostage", font=custom_font3, foreground="grey", background="white")
-label31.place(x=360, y=370)
+label31.place(x=360, y=320)
 
+label22 = ttk.Label(frame4, text="Passes", font=custom_font3, foreground="grey", background="white")
+label22.place(x=360, y=340)
 
 
 
