@@ -63,6 +63,34 @@ custom_font = Font(family="Calibri", size=16, weight="bold")
 custom_font2 = Font(family="Calibri", size=10, weight="bold", slant="italic")
 custom_font3 = Font(family="Calibri", size=10, weight="bold")
 
+
+
+def remiseazero():
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+    Imputation = 'initial'
+    QMOS = 'initial'
+    ProcedeSoudage = 'initial'
+    Diametre = 'initial'
+    TypeJoint = 'initial'
+    Pression = 'initial'
+    Epaisseur = 'initial'
+    Norme = 'initial'
+    Courant = 'initial'
+    Passes = 'initial'
+    Meulage = 'initial'
+    Etuvage = 'initial'
+    Chanfrein = 'initial'
+    Oxycoupage = 'initial'
+    Sechage = 'initial'
+    Prechauffage = 'initial'
+    TemperatureEntrePasses = 'initial'
+    Type = 'initial'
+    Longueur = 'initial'
+    show_frame(frame2)
+    print(Imputation)
+
+
 # Charger une image avec PIL
 image_path = "logo.png"
 image = Image.open(image_path)
@@ -634,10 +662,10 @@ def display_pdf_in_frame():
         print(f"Erreur lors de l'extraction et de l'affichage de l'image: {e}")
 
 
-button4 = ttk.Button(frame4, text="Retour", command=lambda: show_frame(frame2), style="TButton")
-button4.place(x=350, y=420)
+#button4 = ttk.Button(frame4, text="Retour", command=lambda: show_frame(frame2), style="TButton")
+#button4.place(x=350, y=420)
 
-button5 = ttk.Button(frame4, text="Valider", command=lambda: show_frame(frame5), style="TButton")
+button5 = ttk.Button(frame4, text="Suivant", command=lambda: show_frame(frame5), style="TButton")
 button5.place(x=745, y=420)
 
 label13 = ttk.Label(frame4, text="DESCRIPTIF DE MODE OPERATOIRE DE SOUDAGE", font=custom_font, background="white")
@@ -723,13 +751,32 @@ button8.place(relx=0.5, anchor='center', y=300)
 button6 = ttk.Button(frame5, text="Retour", command=lambda: show_frame(frame4), style="TButton")
 button6.place(x=25, y=420)
 
-button7 = ttk.Button(frame5, text="Quitter", command=lambda: show_frame(frame5), style="TButton")
+
+def quitter():
+    print("Closing application")
+    root.destroy()
+
+
+button7 = ttk.Button(frame5, text="Quitter", command=quitter, style="TButton")
 button7.place(x=745, y=420)
 
 label10 = ttk.Label(frame5, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
 label10.place(relx=0.5, anchor='center', y=460)
 
+
+
+
+#Remise à zéro à revoir !
+
+
+
+button9 = ttk.Button(frame5, text="Scanner un autre DMOS", command=remiseazero, style="TButton")
+button9.place(relx=0.5, anchor='center', y=400)
+
+
 show_frame(frame1)
 
 # Démarrer la boucle principale
 root.mainloop()
+
+#Remettre à zéro les variables et destroy les labels de variables
