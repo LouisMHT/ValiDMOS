@@ -136,10 +136,10 @@ def utiliser_fichier():
 
             # Si du texte est trouvé sur la page, ce n'est probablement pas un PDF scanné
             if text.strip():
-                root.after(3000, lambda: scan2(chemin_fichier))
+                return root.after(3000, lambda: scan2(chemin_fichier))
 
         # Si aucune page n'a de texte, c'est probablement un PDF scanné
-        root.after(3000, lambda: scan(chemin_fichier))
+        return root.after(3000, lambda: scan(chemin_fichier))
 
 
 all_extracted_text = ""
