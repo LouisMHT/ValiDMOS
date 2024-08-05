@@ -127,6 +127,18 @@ def utiliser_fichier():
     global chemin_fichier
     if frame3.winfo_ismapped():
         print("Frame 3 affichée")
+        # Ouvrir le document PDF
+        document = fitz.open(chemin_fichier)
+
+        for page_num in range(len(document)):
+            page = document.load_page(page_num)
+            text = page.get_text()
+
+            # Si du texte est trouvé sur la page, ce n'est probablement pas un PDF scanné
+            if text.strip():
+                root.after(3000, lambda: scan2(chemin_fichier))
+
+        # Si aucune page n'a de texte, c'est probablement un PDF scanné
         root.after(3000, lambda: scan(chemin_fichier))
 
 
@@ -180,6 +192,32 @@ def scan(chemin_fichier):
         utiliser_text()
     except Exception as e:
         pass
+
+
+def scan2(chemin_fichier):
+    global all_extracted_text
+    try:
+        # Open the PDF file
+        pdf_document = fitz.open(chemin_fichier)
+        text_list = []
+
+        # Iterate through each page
+        for page_num in range(len(pdf_document)):
+            page = pdf_document.load_page(page_num)  # Load each page
+            blocks = page.get_text("dict")["blocks"]  # Get text as dictionary
+
+            for block in blocks:
+                if "lines" in block:  # Check if the block contains lines of text
+                    for line in block["lines"]:
+                        line_text = "".join([span["text"] for span in line["spans"]])  # The actual text
+                        text_list.append(line_text)
+
+        print(text_list)
+        all_extracted_text = text_list
+        utiliser_text2()
+    except Exception as e:
+        pass
+
 
 
 def utiliser_text():
@@ -347,6 +385,157 @@ def utiliser_text():
         "Type": Type,
         "Longueur": Longueur
     }
+
+
+def utiliser_text2():
+    global all_extracted_text
+    print("Texte extrait de toutes les images:\n", all_extracted_text)
+    data = all_extracted_text
+    display_pdf_in_frame()
+    root.after(3000, lambda: show_frame(frame4))
+    # Initialiser les variables globales
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+
+    Imputation = all_extracted_text[109]
+    Imputation = Imputation[18:]
+
+    QMOS = all_extracted_text[36]
+    QMOS = QMOS[22:]
+
+    ProcedeSoudage = all_extracted_text[126]
+
+    TypeJoint = all_extracted_text[4]
+
+    Pression = all_extracted_text[6]
+
+    Diametre = all_extracted_text[37]
+
+    Epaisseur = all_extracted_text[38]
+
+    Norme = all_extracted_text[124]
+
+    Courant = all_extracted_text[8]
+    Courant = Courant[55:]
+    Courant = Courant[:2]
+
+    Meulage = all_extracted_text[10]
+    Meulage = Meulage[12:]
+
+    Etuvage = all_extracted_text[11]
+    Etuvage = Etuvage[27:]
+
+    Chanfrein = all_extracted_text[13]
+    Chanfrein = Chanfrein[24:]
+
+    Oxycoupage = all_extracted_text[14]
+    Oxycoupage = Oxycoupage[15:]
+
+    Sechage = all_extracted_text[17]
+    Sechage = Sechage[28:]
+
+    Prechauffage = all_extracted_text[18]
+    Prechauffage = Prechauffage[37:]
+
+    TemperatureEntrePasses = all_extracted_text[19]
+    TemperatureEntrePasses = TemperatureEntrePasses[34:]
+
+    Type = all_extracted_text[22]
+    Type = Type[9:]
+
+    Longueur = all_extracted_text[25]
+    Longueur = Longueur[25:]
+
+
+
+
+
+
+
+
+
+    # labels
+
+    label32 = ttk.Label(frame4, text=Imputation, font=custom_font3, background="white")
+    label32.place(x=725, y=40)
+
+    label33 = ttk.Label(frame4, text=QMOS, font=custom_font3, background="white")
+    label33.place(x=480, y=40)
+
+    label34 = ttk.Label(frame4, text=ProcedeSoudage, font=custom_font3, background="white")
+    label34.place(x=560, y=60)
+
+    label35 = ttk.Label(frame4, text=TypeJoint, font=custom_font3, background="white")
+    label35.place(x=560, y=80)
+
+    label36 = ttk.Label(frame4, text=Pression, font=custom_font3, background="white")
+    label36.place(x=560, y=100)
+
+    label37 = ttk.Label(frame4, text=Diametre, font=custom_font3, background="white")
+    label37.place(x=560, y=120)
+
+    label38 = ttk.Label(frame4, text=Epaisseur, font=custom_font3, background="white")
+    label38.place(x=560, y=140)
+
+    label39 = ttk.Label(frame4, text=Norme, font=custom_font3, background="white")
+    label39.place(x=560, y=160)
+
+    label40 = ttk.Label(frame4, text=Courant, font=custom_font3, background="white")
+    label40.place(x=560, y=180)
+
+    label42 = ttk.Label(frame4, text=Meulage, font=custom_font3, background="white")
+    label42.place(x=500, y=200)
+
+    label43 = ttk.Label(frame4, text=Etuvage, font=custom_font3, background="white")
+    label43.place(x=750, y=200)
+
+    label44 = ttk.Label(frame4, text=Chanfrein, font=custom_font3, background="white")
+    label44.place(x=500, y=220)
+
+    label45 = ttk.Label(frame4, text=Oxycoupage, font=custom_font3, background="white")
+    label45.place(x=750, y=220)
+
+    label46 = ttk.Label(frame4, text=Sechage, font=custom_font3, background="white")
+    label46.place(x=560, y=240)
+
+    label47 = ttk.Label(frame4, text=Prechauffage, font=custom_font3, background="white")
+    label47.place(x=560, y=260)
+
+    label48 = ttk.Label(frame4, text=TemperatureEntrePasses, font=custom_font3, background="white")
+    label48.place(x=560, y=280)
+
+    label49 = ttk.Label(frame4, text=Type, font=custom_font3, background="white")
+    label49.place(x=560, y=300)
+
+    label50 = ttk.Label(frame4, text=Longueur, font=custom_font3, background="white")
+    label50.place(x=750, y=320)
+
+    label41 = ttk.Label(frame4, text=Passes, font=custom_font3, background="white")
+    label41.place(x=435, y=340)
+
+    # Retourner les valeurs extraites
+    return {
+        "Imputation": Imputation,
+        "QMOS": QMOS,
+        "ProcedeSoudage": ProcedeSoudage,
+        "Diametre": Diametre,
+        "TypeJoint": TypeJoint,
+        "Pression": Pression,
+        "Epaisseur": Epaisseur,
+        "Norme": Norme,
+        "Courant": Courant,
+        "Passes": Passes,
+        "Meulage": Meulage,
+        "Etuvage": Etuvage,
+        "Chanfrein": Chanfrein,
+        "Oxycoupage": Oxycoupage,
+        "Sechage": Sechage,
+        "Prechauffage": Prechauffage,
+        "TemperatureEntrePasses": TemperatureEntrePasses,
+        "Type": Type,
+        "Longueur": Longueur
+    }
+
 
 
 # Crée un bouton pour ouvrir la boîte de dialogue de sélection de fichier

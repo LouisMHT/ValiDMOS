@@ -5,10 +5,7 @@ from tkinter.font import Font
 from PIL import Image, ImageTk
 from tkinter import filedialog, messagebox
 import fitz  # PyMuPDF
-import easyocr
 import io
-import numpy as np
-import re
 
 Imputation = ''
 QMOS = ''
@@ -152,8 +149,8 @@ def scan(chemin_fichier):
                         text_list.append(line_text)
 
         print(text_list)
-
-        #utiliser_text()
+        all_extracted_text = text_list
+        utiliser_text()
     except Exception as e:
         pass
 
@@ -168,80 +165,63 @@ def utiliser_text():
     global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
     global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
 
-    # Liste des mots-clés
-    keywords = ['DESCRIPTIF', 'Imputation', 'DMOS', 'Adresse', 'Elément', 'QMOS', 'Nature', 'Fabricant', 'Nuance',
-                'Grou',
-                'Procédé', 'extérieur', 'Type', 'Pression', 'Epaisseur', 'Norme', 'Schéma', 'Disposition', 'Mode',
-                'Meulage',
-                'Etuvage', 'Coordonnateur', 'Chanfrein', 'Oxycoupage', 'Conditions', 'Séchage', 'Température',
-                'Temperature',
-                'Direction', 'Moyen', 'Moven', 'Longueur', 'Autre', 'Passe', '%', 'Paramètre', 'CC']
+    Imputation = all_extracted_text[109]
+    Imputation = Imputation[18:]
 
-    # Créer un motif d'expression régulière pour séparer aux mots-clés
-    pattern = r'({})'.format('|'.join(keywords))
+    QMOS = all_extracted_text[36]
+    QMOS = QMOS[22:]
 
-    # Diviser la chaîne en sections basées sur les mots-clés
-    sections = re.split(pattern, data)
+    ProcedeSoudage = all_extracted_text[126]
 
-    # Initialiser des variables pour stocker les sections
-    current_section = ""
-    sections_list = []
+    TypeJoint = all_extracted_text[4]
 
-    for i, part in enumerate(sections):
-        if part in keywords:
-            if current_section:
-                sections_list.append(current_section.strip())
-            current_section = part
-        else:
-            current_section += part
+    Pression = all_extracted_text[6]
 
-    # Ajouter la dernière section si elle existe
-    if current_section:
-        sections_list.append(current_section.strip())
+    Diametre = all_extracted_text[37]
 
-    # Liste des mots-clés à rechercher
-    keywords_to_remove = ['GRDF', 'Intensité', 'Elément', 'Fabricant', 'Grou', 'Schéma', 'Direction', 'Moyen', 'Moven',
-                          'Autre', 'Paramètre', 'Passe', '415', '425', 'enrobage', 'DESCRIPTIF', 'DMOS', 'Adresse',
-                          'Mode', 'Conditions', 'Nature', 'Coordonnateur', 'Disposition', 'courant']
+    Epaisseur = all_extracted_text[38]
 
-    # Utiliser une liste de compréhension pour filtrer les chaînes
-    cleaned_data_list = [
-        data for data in sections_list
-        if not any(keyword in data for keyword in keywords_to_remove)
-    ]
+    Norme = all_extracted_text[124]
 
-    def modify_string(data, keywords, attribute_name, slice_index):
-        global_vars = globals()
-        if any(keyword in data for keyword in keywords):
-            global_vars[attribute_name] = data[slice_index:]
-            return data[slice_index:]
-        return data
+    Courant = all_extracted_text[8]
+    Courant = Courant[55:]
+    Courant = Courant[:2]
 
-    modifications = [
-        (['Imputation'], 'Imputation', 16),
-        (['QMOS'], 'QMOS', 18),
-        (['Procédé'], 'ProcedeSoudage', 19),
-        (['extérieur'], 'Diametre', 10),
-        (['joint'], 'TypeJoint', 14),
-        (['Pression'], 'Pression', 29),
-        (['Epaisseur'], 'Epaisseur', 10),
-        (['Norme'], 'Norme', 13),
-        (['CC'], 'Courant', (-12)),
-        (['%'], 'Passes', 2),
-        (['Meulage'], 'Meulage', 8),
-        (['Etuvage'], 'Etuvage', 23),
-        (['Chanfrein'], 'Chanfrein', 20),
-        (['Oxycoupage'], 'Oxycoupage', 11),
-        (['Séchage'], 'Sechage', 23),
-        (['préchauffage'], 'Prechauffage', 33),
-        (['passes'], 'TemperatureEntrePasses', 30),
-        (['Type'], 'Type', 5),
-        (['Longueur'], 'Longueur', 68),
-    ]
+    Meulage = all_extracted_text[10]
+    Meulage = Meulage[12:]
 
-    for keywords, attribute_name, slice_index in modifications:
-        cleaned_data_list = [modify_string(data, keywords, attribute_name, slice_index) for data in cleaned_data_list]
-    print(Imputation)
+    Etuvage = all_extracted_text[11]
+    Etuvage = Etuvage[27:]
+
+    Chanfrein = all_extracted_text[13]
+    Chanfrein = Chanfrein[24:]
+
+    Oxycoupage = all_extracted_text[14]
+    Oxycoupage = Oxycoupage[15:]
+
+    Sechage = all_extracted_text[17]
+    Sechage = Sechage[28:]
+
+    Prechauffage = all_extracted_text[18]
+    Prechauffage = Prechauffage[37:]
+
+    TemperatureEntrePasses = all_extracted_text[19]
+    TemperatureEntrePasses = TemperatureEntrePasses[34:]
+
+    Type = all_extracted_text[22]
+    Type = Type[9:]
+
+    Longueur = all_extracted_text[25]
+    Longueur = Longueur[25:]
+
+
+
+
+
+
+
+
+
     # labels
 
     label32 = ttk.Label(frame4, text=Imputation, font=custom_font3, background="white")
