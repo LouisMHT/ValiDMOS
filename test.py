@@ -186,12 +186,6 @@ def scan(chemin_fichier):
 def utiliser_text():
     global all_extracted_text
     print("Texte extrait de toutes les images:\n", all_extracted_text)
-    display_pdf_in_frame()
-    root.after(3000, lambda: show_frame(frame4))
-
-def utiliser_text():
-    global all_extracted_text
-    print("Texte extrait de toutes les images:\n", all_extracted_text)
     data = all_extracted_text
     display_pdf_in_frame()
     root.after(3000, lambda: show_frame(frame4))

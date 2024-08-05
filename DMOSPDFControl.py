@@ -136,57 +136,32 @@ all_extracted_text = ""
 def scan(chemin_fichier):
     global all_extracted_text
     try:
+        # Open the PDF file
+        pdf_document = fitz.open(pdf_path)
+        detailed_text = []
 
-        # Initialiser le lecteur easyocr pour la langue française
-        reader = easyocr.Reader(['fr'])
+        # Iterate through each page
+        for page_num in range(len(pdf_document)):
+            page = pdf_document.load_page(page_num)  # Load each page
+            blocks = page.get_text("dict")["blocks"]  # Get text as dictionary
 
-        # Ouvrir le PDF
-        pdf_path = chemin_fichier
-        document = fitz.open(pdf_path)
+            for block in blocks:
+                if "lines" in block:  # Check if the block contains lines of text
+                    for line in block["lines"]:
+                        line_dict = {
+                            "page": page_num + 1,
+                            "bbox": line["bbox"],  # Bounding box of the text line
+                            "text": "".join([span["text"] for span in line["spans"]]),  # The actual text
+                            "font": [span["font"] for span in line["spans"]],  # Font used
+                            "size": [span["size"] for span in line["spans"]],  # Font size
+                        }
+                        detailed_text.append(line_dict)
 
-        # Variable pour regrouper toutes les informations extraites
-        all_texts = []
+        return detailed_text
 
-        # Sélectionner la page (ici la première page, index 0)
-        page = document[0]
-
-        # Extraire l'image de la page
-        image_list = page.get_images(full=True)
-        for img_index, img in enumerate(image_list, start=1):
-            xref = img[0]
-            base_image = document.extract_image(xref)
-            image_bytes = base_image["image"]
-
-            # Convertir l'image en format PIL
-            image = Image.open(io.BytesIO(image_bytes))
-
-            # Convertir l'image PIL en tableau de pixels
-            image_np = np.array(image)
-
-            # Utiliser easyocr pour effectuer l'OCR
-            result = reader.readtext(image_np, detail=0)  # detail=0 pour obtenir seulement le texte
-
-            # Regrouper le texte extrait dans une seule variable
-            extracted_text = " ".join(result)
-            all_texts.append(extracted_text)
-
-        # Fermer le document PDF
-        document.close()
-
-        # Afficher toutes les informations extraites
-        all_extracted_text = " ".join(all_texts)
-
-        print("Texte extrait de toutes les images:\n", all_extracted_text)
-        utiliser_text()
+        #utiliser_text()
     except Exception as e:
         pass
-
-
-def utiliser_text():
-    global all_extracted_text
-    print("Texte extrait de toutes les images:\n", all_extracted_text)
-    display_pdf_in_frame()
-    root.after(3000, lambda: show_frame(frame4))
 
 
 def utiliser_text():
