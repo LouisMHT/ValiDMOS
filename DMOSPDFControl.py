@@ -137,8 +137,8 @@ def scan(chemin_fichier):
     global all_extracted_text
     try:
         # Open the PDF file
-        pdf_document = fitz.open(pdf_path)
-        detailed_text = []
+        pdf_document = fitz.open(chemin_fichier)
+        text_list = []
 
         # Iterate through each page
         for page_num in range(len(pdf_document)):
@@ -148,16 +148,10 @@ def scan(chemin_fichier):
             for block in blocks:
                 if "lines" in block:  # Check if the block contains lines of text
                     for line in block["lines"]:
-                        line_dict = {
-                            "page": page_num + 1,
-                            "bbox": line["bbox"],  # Bounding box of the text line
-                            "text": "".join([span["text"] for span in line["spans"]]),  # The actual text
-                            "font": [span["font"] for span in line["spans"]],  # Font used
-                            "size": [span["size"] for span in line["spans"]],  # Font size
-                        }
-                        detailed_text.append(line_dict)
+                        line_text = "".join([span["text"] for span in line["spans"]])  # The actual text
+                        text_list.append(line_text)
 
-        return detailed_text
+        print(text_list)
 
         #utiliser_text()
     except Exception as e:

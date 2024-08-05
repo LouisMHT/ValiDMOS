@@ -35,3 +35,5 @@ text_details = extract_text_with_details(pdf_path)
 for detail in text_details:
     #print(f"Page: {detail['page']}, BBox: {detail['bbox']}, Font: {detail['font']}, Size: {detail['size']}")
     print(f"Text: {detail['text']}\n")
+
+print(text_details)

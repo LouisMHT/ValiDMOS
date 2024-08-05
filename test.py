@@ -183,6 +183,7 @@ def scan(chemin_fichier):
     except Exception as e:
         pass
 
+
 def utiliser_text():
     global all_extracted_text
     print("Texte extrait de toutes les images:\n", all_extracted_text)
