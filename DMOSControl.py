@@ -9,6 +9,10 @@ import easyocr
 import io
 import numpy as np
 import re
+import pandas as pd
+import os
+from tkinter import Tk
+import sys
 
 Imputation = ''
 QMOS = ''
@@ -62,10 +66,6 @@ frame5.place(x=0, y=0, relwidth=1, relheight=1)
 custom_font = Font(family="Calibri", size=16, weight="bold")
 custom_font2 = Font(family="Calibri", size=10, weight="bold", slant="italic")
 custom_font3 = Font(family="Calibri", size=10, weight="bold")
-
-
-
-
 
 
 # Charger une image avec PIL
@@ -718,11 +718,69 @@ photo3 = ImageTk.PhotoImage(image3)
 image_label3 = tk.Label(frame5, image=photo3, bg="white")
 image_label3.place(x=327, y=20)
 
+
+def outputexcel():
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+    # Créer des données
+    noms = ['Imputation', 'QMOS', 'ProcedeSoudage', 'Diametre', 'TypeJoint', 'Pression', 'Epaisseur', 'Norme',
+            'Courant', 'Passes', 'Meulage', 'Etuvage', 'Chanfrein', 'Oxycoupage', 'Sechage', 'Prechauffage',
+            'TemperatureEntrePasses', 'Type', 'Longueur']
+
+    valeurs = [Imputation, QMOS, ProcedeSoudage, ' ', TypeJoint, ' ', ' ', ' ',
+               Courant, Passes, Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage,
+               TemperatureEntrePasses, Type, Longueur]
+
+    element1 = [' ', ' ', ' ', Diametre, ' ', Pression, Epaisseur, Norme,
+               ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+               ' ', ' ', ' ']
+
+    # Si certaines variables globales ne sont pas définies, remplacez-les par une valeur par défaut
+    valeurs = [v if v is not None else 'A compléter' for v in valeurs]
+
+    # Créer un DataFrame pandas à partir des données
+    data = {
+        'Nom': noms,
+        'Valeur': valeurs,
+        'Element 1': element1,  # Colonne vide
+        'Element 2 ': ['A compléter'] * len(noms)  # Colonne avec des valeurs par défaut
+    }
+    # Créer un DataFrame pandas à partir des données
+    df = pd.DataFrame(data)
+
+    # Cacher la fenêtre principale de tkinter
+    root = Tk()
+    root.withdraw()
+    try:
+        # Ouvrir une boîte de dialogue pour choisir le dossier
+        dossier = filedialog.askdirectory()
+
+        # Vérifier si un dossier a été sélectionné
+        if dossier:
+            # Spécifier le nom du fichier
+            nom_fichier = 'output.xlsx'
+
+            # Créer le chemin complet
+            chemin_complet = os.path.join(dossier, nom_fichier)
+
+            # Exporter le DataFrame vers un fichier Excel à l'endroit spécifié
+            df.to_excel(chemin_complet, index=False)
+
+            print(f"Données exportées avec succès vers '{chemin_complet}'")
+            messagebox.showinfo("Succès", f"Données exportées avec succès vers '{chemin_complet}'")
+        else:
+            print("Aucun dossier sélectionné. Opération annulée.")
+            messagebox.showwarning("Annulé", "Aucun dossier sélectionné. Opération annulée.")
+    except Exception as e:
+        # Afficher un message d'erreur en cas de problème
+        messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
+
+
 # Ajouter un label et un bouton
 label11 = ttk.Label(frame5, text="Télécharger le fichier Excel du DMOS", font=custom_font, background="white")
 label11.place(relx=0.5, anchor='center', y=230)
 
-button8 = ttk.Button(frame5, text="Télécharger", command=lambda: show_frame(frame5), style="TButton")
+button8 = ttk.Button(frame5, text="Télécharger", command=outputexcel, style="TButton")
 button8.place(relx=0.5, anchor='center', y=300)
 
 button6 = ttk.Button(frame5, text="Retour", command=lambda: show_frame(frame4), style="TButton")
@@ -732,7 +790,7 @@ button6.place(x=25, y=420)
 def quitter():
     print("Closing application")
     root.destroy()
-
+    sys.exit()
 
 button7 = ttk.Button(frame5, text="Quitter", command=quitter, style="TButton")
 button7.place(x=745, y=420)
@@ -740,10 +798,6 @@ button7.place(x=745, y=420)
 label10 = ttk.Label(frame5, text="Application en Bêta - LT", font=custom_font2, foreground="grey", background="white")
 label10.place(relx=0.5, anchor='center', y=460)
 
-
-
-
-#Remise à zéro à revoir !
 
 def remiseazero():
     global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
@@ -832,6 +886,15 @@ def remiseazero():
 button9 = ttk.Button(frame5, text="Scanner un autre DMOS", command=remiseazero, style="TButton")
 button9.place(relx=0.5, anchor='center', y=400)
 
+
+def on_closing():
+    print("Fermeture de la fenêtre")
+    root.destroy()  # Ferme la fenêtre principale
+    sys.exit()      # Termine le programme Python
+
+
+# Remplacement de la méthode de fermeture par défaut
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 show_frame(frame1)
 

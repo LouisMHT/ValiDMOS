@@ -1,26 +1,35 @@
-import fitz  # PyMuPDF
+import pandas as pd
+import os
+from tkinter import Tk, filedialog
 
+# Créer des données
+data = {
+    'Nom': ['Alice', 'Bob', 'Charlie'],
+    'Âge': [25, 30, 35],
+    'Ville': ['Paris', 'Lyon', 'Marseille']
+}
 
-def is_scanned_pdf(file_path):
-    # Ouvrir le document PDF
-    document = fitz.open(file_path)
+# Créer un DataFrame pandas à partir des données
+df = pd.DataFrame(data)
 
-    for page_num in range(len(document)):
-        page = document.load_page(page_num)
-        text = page.get_text()
+# Cacher la fenêtre principale de tkinter
+root = Tk()
+root.withdraw()
 
-        # Si du texte est trouvé sur la page, ce n'est probablement pas un PDF scanné
-        if text.strip():
-            return False
+# Ouvrir une boîte de dialogue pour choisir le dossier
+dossier = filedialog.askdirectory()
 
-    # Si aucune page n'a de texte, c'est probablement un PDF scanné
-    return True
+# Vérifier si un dossier a été sélectionné
+if dossier:
+    # Spécifier le nom du fichier
+    nom_fichier = 'output.xlsx'
 
+    # Créer le chemin complet
+    chemin_complet = os.path.join(dossier, nom_fichier)
 
-# Chemin vers votre fichier PDF
-file_path = 'DMOS2.pdf'
+    # Exporter le DataFrame vers un fichier Excel à l'endroit spécifié
+    df.to_excel(chemin_complet, index=False)
 
-if is_scanned_pdf(file_path):
-    print("Le fichier PDF est une version scannée.")
+    print(f"Données exportées avec succès vers '{chemin_complet}'")
 else:
-    print("Le fichier PDF est une version native.")
+    print("Aucun dossier sélectionné. Opération annulée.")
