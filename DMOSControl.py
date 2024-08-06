@@ -65,30 +65,7 @@ custom_font3 = Font(family="Calibri", size=10, weight="bold")
 
 
 
-def remiseazero():
-    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
-    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
-    Imputation = 'initial'
-    QMOS = 'initial'
-    ProcedeSoudage = 'initial'
-    Diametre = 'initial'
-    TypeJoint = 'initial'
-    Pression = 'initial'
-    Epaisseur = 'initial'
-    Norme = 'initial'
-    Courant = 'initial'
-    Passes = 'initial'
-    Meulage = 'initial'
-    Etuvage = 'initial'
-    Chanfrein = 'initial'
-    Oxycoupage = 'initial'
-    Sechage = 'initial'
-    Prechauffage = 'initial'
-    TemperatureEntrePasses = 'initial'
-    Type = 'initial'
-    Longueur = 'initial'
-    show_frame(frame2)
-    print(Imputation)
+
 
 
 # Charger une image avec PIL
@@ -768,6 +745,88 @@ label10.place(relx=0.5, anchor='center', y=460)
 
 #Remise à zéro à revoir !
 
+def remiseazero():
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+    Imputation = ''
+    QMOS = ''
+    ProcedeSoudage = ''
+    Diametre = ''
+    TypeJoint = ''
+    Pression = ''
+    Epaisseur = ''
+    Norme = ''
+    Courant = ''
+    Passes = ''
+    Meulage = ''
+    Etuvage = ''
+    Chanfrein = ''
+    Oxycoupage = ''
+    Sechage = ''
+    Prechauffage = ''
+    TemperatureEntrePasses = ''
+    Type = ''
+    Longueur = ''
+
+    label32 = ttk.Label(frame4, text='                     ', font=custom_font3, background="white")
+    label32.place(x=725, y=40)
+
+    label33 = ttk.Label(frame4, text='                        ', font=custom_font3, background="white")
+    label33.place(x=480, y=40)
+
+    label34 = ttk.Label(frame4, text='                        ', font=custom_font3, background="white")
+    label34.place(x=560, y=60)
+
+    label35 = ttk.Label(frame4, text='                        ', font=custom_font3, background="white")
+    label35.place(x=560, y=80)
+
+    label36 = ttk.Label(frame4, text='                         ', font=custom_font3, background="white")
+    label36.place(x=560, y=100)
+
+    label37 = ttk.Label(frame4, text='                                                                                                              ', font=custom_font3, background="white")
+    label37.place(x=560, y=120)
+
+    label38 = ttk.Label(frame4, text='                                                                                                              ', font=custom_font3, background="white")
+    label38.place(x=560, y=140)
+
+    label39 = ttk.Label(frame4, text='                                                                                                               ', font=custom_font3, background="white")
+    label39.place(x=560, y=160)
+
+    label40 = ttk.Label(frame4, text='                           ', font=custom_font3, background="white")
+    label40.place(x=560, y=180)
+
+    label42 = ttk.Label(frame4, text='            ', font=custom_font3, background="white")
+    label42.place(x=500, y=200)
+
+    label43 = ttk.Label(frame4, text='                                                    ', font=custom_font3, background="white")
+    label43.place(x=750, y=200)
+
+    label44 = ttk.Label(frame4, text='            ', font=custom_font3, background="white")
+    label44.place(x=500, y=220)
+
+    label45 = ttk.Label(frame4, text='                                                     ', font=custom_font3, background="white")
+    label45.place(x=750, y=220)
+
+    label46 = ttk.Label(frame4, text='                               ', font=custom_font3, background="white")
+    label46.place(x=560, y=240)
+
+    label47 = ttk.Label(frame4, text='                           ', font=custom_font3, background="white")
+    label47.place(x=560, y=260)
+
+    label48 = ttk.Label(frame4, text='                            ', font=custom_font3, background="white")
+    label48.place(x=560, y=280)
+
+    label49 = ttk.Label(frame4, text='                     ', font=custom_font3, background="white")
+    label49.place(x=560, y=300)
+
+    label50 = ttk.Label(frame4, text='                     ', font=custom_font3, background="white")
+    label50.place(x=750, y=320)
+
+    label41 = ttk.Label(frame4, text='                                                                                                                                                          ',
+                        font=custom_font3, background="white")
+    label41.place(x=435, y=340)
+    show_frame(frame2)
+    print(Imputation)
 
 
 button9 = ttk.Button(frame5, text="Scanner un autre DMOS", command=remiseazero, style="TButton")
@@ -778,5 +837,3 @@ show_frame(frame1)
 
 # Démarrer la boucle principale
 root.mainloop()
-
-#Remettre à zéro les variables et destroy les labels de variables
