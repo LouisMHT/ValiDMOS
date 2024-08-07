@@ -14,6 +14,8 @@ import os
 from tkinter import Tk
 import sys
 
+reader = easyocr.Reader(['fr'], model_storage_directory='model', download_enabled=False)
+
 Imputation = ''
 QMOS = ''
 ProcedeSoudage = ''
@@ -45,7 +47,7 @@ root = ThemedTk(theme="adapta")  # Appliquer le thème Adapta
 root.title("GRDF - ValiDMOS")
 root.geometry("854x480")
 root.resizable(False, False)
-icon = tk.PhotoImage(file="logo3.png")
+icon = tk.PhotoImage(file="images/logo3.png")
 root.iconphoto(False, icon)
 root.configure(bg="white")
 
@@ -69,7 +71,7 @@ custom_font3 = Font(family="Calibri", size=10, weight="bold")
 
 
 # Charger une image avec PIL
-image_path = "logo.png"
+image_path = "images/logo.png"
 image = Image.open(image_path)
 image = image.resize((298, 148))
 photo = ImageTk.PhotoImage(image)
@@ -90,7 +92,7 @@ label2 = ttk.Label(frame1, text="Application en Bêta - LT", font=custom_font2, 
 label2.place(relx=0.5, anchor='center', y=460)
 
 # Charger une image avec PIL
-image_path2 = "logopdf.png"
+image_path2 = "images/logopdf.png"
 image2 = Image.open(image_path2)
 image2 = image2.resize((128, 128))
 photo2 = ImageTk.PhotoImage(image2)
@@ -155,7 +157,8 @@ def scan(chemin_fichier):
     try:
 
         # Initialiser le lecteur easyocr pour la langue française
-        reader = easyocr.Reader(['fr'])
+        reader = easyocr.Reader(['fr'], model_storage_directory='model', download_enabled=False)
+        #reader = easyocr.Reader(['fr'])
 
         # Ouvrir le PDF
         pdf_path = chemin_fichier
@@ -196,6 +199,7 @@ def scan(chemin_fichier):
         print("Texte extrait de toutes les images:\n", all_extracted_text)
         utiliser_text()
     except Exception as e:
+        messagebox.showerror("Erreur", f"Une erreur est survenue : {e}")
         pass
 
 
@@ -577,7 +581,7 @@ def update_frame(ind):
 
 
 # Charger le GIF
-gif_path = "chargement3.gif"  # Remplacez par le chemin de votre GIF
+gif_path = "images/chargement3.gif"  # Remplacez par le chemin de votre GIF
 im = Image.open(gif_path)
 
 # Charger toutes les frames du GIF
@@ -709,7 +713,7 @@ label22 = ttk.Label(frame4, text="Passes", font=custom_font3, foreground="grey",
 label22.place(x=360, y=340)
 
 # Charger une image avec PIL
-image_path3 = "logoexcel.png"
+image_path3 = "images/logoexcel.png"
 image3 = Image.open(image_path3)
 image3 = image3.resize((200, 200))
 photo3 = ImageTk.PhotoImage(image3)
