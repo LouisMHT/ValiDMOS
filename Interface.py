@@ -4,9 +4,9 @@ from ttkthemes import ThemedTk
 from tkinter.font import Font
 from PIL import Image, ImageTk
 from tkinter import filedialog, messagebox
-# import fitz  # PyMuPDF
+import fitz  # PyMuPDF
 # import easyocr
-# import io
+import io
 # import numpy as np
 # import re
 # import pandas as pd
@@ -23,8 +23,8 @@ def show_frame(frame):
 # Crée la fenêtre principale avec le thème Adapta
 root = ThemedTk(theme="adapta")  # Appliquer le thème Adapta
 root.title("GRDF - ValiDMOS")
-root.geometry("854x480")
-root.minsize(854, 480)  # Définir la taille minimale
+root.geometry("1000x560")
+root.minsize(1000, 560)  # Définir la taille minimale
 icon = tk.PhotoImage(file="images/logo3.png")
 root.iconphoto(False, icon)
 root.configure(bg="white")
@@ -33,11 +33,15 @@ root.configure(bg="white")
 frame1 = tk.Frame(root, bg="white")
 frame2 = tk.Frame(root, bg="white")
 frame3 = tk.Frame(root, bg="white")
+frame4 = tk.Frame(root, bg="white")
+frame5 = tk.Frame(root, bg="white")
 
 # Utilisation de grid pour les frames
 frame1.grid(row=0, column=0, sticky='nsew')
 frame2.grid(row=0, column=0, sticky='nsew')
 frame3.grid(row=0, column=0, sticky='nsew')
+frame4.grid(row=0, column=0, sticky='nsew')
+frame5.grid(row=0, column=0, sticky='nsew')
 
 # Configurer la grille de la fenêtre principale pour redimensionner les frames
 root.grid_rowconfigure(0, weight=1)
@@ -165,7 +169,8 @@ def valider():
         # Affiche un message d'erreur si aucun fichier n'a été sélectionné
         messagebox.showerror("Erreur", "Veuillez sélectionner un fichier avant de valider.")
     else:
-        show_frame(frame3)
+        display_pdf_in_canvas(pdf_canvas)
+        show_frame(frame4)
         # utiliser_fichier()
 
 
@@ -258,6 +263,141 @@ label8.grid(row=10, column=0, pady=10)
 
 label7 = ttk.Label(frame3, text="Scan en cours...", font=custom_font, background="white")
 label7.grid(row=6, column=0, pady=10)
+
+
+
+
+# Fonction pour afficher toutes les pages du PDF dans un Canvas avec défilement
+def display_pdf_in_canvas(canvas):
+    try:
+        document = fitz.open(chemin_fichier)
+
+        # Créer un cadre dans le Canvas pour contenir les images
+        canvas_frame = tk.Frame(canvas, bg="white")
+        canvas.create_window((0, 0), window=canvas_frame, anchor="nw")
+
+        # Charger et afficher chaque page du PDF
+        for page_num in range(len(document)):
+            page = document[page_num]
+            pix = page.get_pixmap()
+            img_bytes = pix.tobytes()
+            img = Image.open(io.BytesIO(img_bytes))
+
+            # Redimensionner l'image si nécessaire
+            img = img.resize((475, 700))  # Ajustez la taille selon vos besoins
+            img_tk = ImageTk.PhotoImage(img)
+
+            # Créer un widget Label pour chaque image de page
+            label = tk.Label(canvas_frame, image=img_tk, bg="white")
+            label.image = img_tk  # Garder une référence à l'image
+            label.pack()
+
+        # Ajuster la région de défilement du Canvas pour inclure toutes les images
+        canvas_frame.update_idletasks()
+        canvas.config(scrollregion=canvas.bbox("all"))
+
+        # Fermer le document PDF
+        document.close()
+
+    except Exception as e:
+        print(f"Erreur lors de l'extraction et de l'affichage du PDF: {e}")
+
+# Crée deux cadres, un pour le PDF et un pour les tableaux
+pdf_frame = tk.Frame(frame4, bg="white")
+pdf_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+tables_frame = tk.Frame(frame4, bg="white")
+tables_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+# Créer un Canvas dans le cadre PDF
+pdf_canvas = tk.Canvas(pdf_frame, bg="white")
+pdf_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+# Ajouter une barre de défilement verticale
+scrollbar = tk.Scrollbar(pdf_frame, orient="vertical", command=pdf_canvas.yview)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+pdf_canvas.configure(yscrollcommand=scrollbar.set)
+
+
+treeview = tk.ttk.Treeview(tables_frame, columns=("col1"), show="headings", height=2)
+treeview.heading("col1", text="DESCRIPTIF DE MODE OPERATOIRE DE SOUDAGE")
+treeview.column("col1", width=100, anchor=tk.W)
+tableau1 = [
+    ("Imputation/EOTP", " "),
+    ("DMOS N°", " "),
+    ("QMOS de Référence", " "),
+    ("Procédé de Soudage", " "),
+    ("Type de joint", " "),
+    ("Pression", " "),
+    ("Courant", " "),
+]
+for row in tableau1:
+    treeview.insert("", tk.END, values=row)
+treeview.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+treeview = tk.ttk.Treeview(tables_frame, columns=("col1", "col2"), show="headings", height=2)
+treeview.heading("col1", text="Elément 1")
+treeview.heading("col2", text="Elément 2")
+treeview.column("col1", width=100, anchor=tk.W)
+treeview.column("col2", width=100, anchor=tk.W)
+tableau2 = [
+    ("Nuance 1", "Nuance 2"),
+    ("D. extérieur 1", "D. extérieur 2"),
+    ("Epaisseur 1", "Epaisseur 2"),
+    ("Norme 1", "Norme 2"),
+]
+for row in tableau2:
+    treeview.insert("", tk.END, values=row)
+treeview.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+treeview = tk.ttk.Treeview(tables_frame, columns=("col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8",
+                                                  "col9", "col10"), show="headings", height=2)
+treeview.heading("col1", text="Passe N°")
+treeview.heading("col2", text="Diamètre")
+treeview.heading("col3", text="Réf.")
+treeview.heading("col4", text="Polarité")
+treeview.heading("col5", text="Designation")
+treeview.heading("col6", text="Position")
+treeview.heading("col7", text="Vitesse")
+treeview.heading("col8", text="Tension")
+treeview.heading("col9", text="Intensité")
+treeview.heading("col10", text="Energie")
+treeview.column("col1", width=20, anchor=tk.W)
+treeview.column("col2", width=20, anchor=tk.W)
+treeview.column("col3", width=100, anchor=tk.W)
+treeview.column("col4", width=20, anchor=tk.W)
+treeview.column("col5", width=100, anchor=tk.W)
+treeview.column("col6", width=20, anchor=tk.W)
+treeview.column("col7", width=20, anchor=tk.W)
+treeview.column("col8", width=20, anchor=tk.W)
+treeview.column("col9", width=20, anchor=tk.W)
+treeview.column("col10", width=20, anchor=tk.W)
+tableau3 = [
+    ("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"),
+]
+for row in tableau3:
+    treeview.insert("", tk.END, values=row)
+treeview.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+treeview = tk.ttk.Treeview(tables_frame, columns=("col1"), show="headings", height=2)
+treeview.heading("col1", text="Mode de préparation, Conditions thermiques et Moyen d'accostage")
+treeview.column("col1", width=100, anchor=tk.W)
+tableau2 = [
+    ("Meulage", " "),
+    ("Etuvage des électrodes", " "),
+    ("Chanfrein d'origine", " "),
+    ("Oxycoupage", " "),
+    ("Séchage/dégourdissage", " "),
+    ("Température de préchauffage", " "),
+    ("Température entre passes", " "),
+    ("Type", " "),
+    ("Longueur", " "),
+]
+for row in tableau2:
+    treeview.insert("", tk.END, values=row)
+treeview.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+
 
 
 # Afficher la première frame au lancement

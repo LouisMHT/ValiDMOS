@@ -1,9 +1,35 @@
 import re
 
+Imputation = ''
+DMOS = ''
+QMOS = ''
+Nuance = ''
+ProcedeSoudage = ''
+Diametre = ''
+TypeJoint = ''
+Pression = ''
+Epaisseur = ''
+Norme = ''
+Courant = ''
+Passes = ''
+Meulage = ''
+Etuvage = ''
+Chanfrein = ''
+Oxycoupage = ''
+Sechage = ''
+Prechauffage = ''
+TemperatureEntrePasses = ''
+Type = ''
+Longueur = ''
+Mail = ''
+
+all_text = []
+
 def process_data(data):
     # Initialiser les variables globales
-    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes
-    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur
+    global Imputation, QMOS, ProcedeSoudage, Diametre, TypeJoint, Pression, Epaisseur, Norme, Courant, Passes, Nuance, DMOS
+    global Meulage, Etuvage, Chanfrein, Oxycoupage, Sechage, Prechauffage, TemperatureEntrePasses, Type, Longueur, Mail
+    global all_text
 
     # Liste des mots-clés
     keywords = ['DESCRIPTIF', 'Imputation', 'DMOS', 'Adresse', 'Elément', 'QMOS', 'Nature', 'Fabricant', 'Nuance', 'Grou',
@@ -33,9 +59,11 @@ def process_data(data):
     if current_section:
         sections_list.append(current_section.strip())
 
+    print(sections_list)
+
     # Liste des mots-clés à rechercher
-    keywords_to_remove = ['GRDF', 'Intensité', 'Elément', 'Fabricant', 'Grou', 'Schéma', 'Direction', 'Moyen', 'Moven',
-                          'Autre', 'Paramètre', 'Passe', '415', '425', 'enrobage', 'DESCRIPTIF', 'DMOS', 'Adresse',
+    keywords_to_remove = ['Materiau', 'Intensité', 'Elément', 'Fabricant', 'Grou', 'Schéma', 'Direction', 'Moyen', 'Moven',
+                          'Paramètre', 'Passe', '415', '425', 'enrobage', 'DESCRIPTIF', 'Adresse',
                           'Mode', 'Conditions', 'Nature', 'Coordonnateur', 'Disposition', 'courant']
 
     # Utiliser une liste de compréhension pour filtrer les chaînes
@@ -43,6 +71,8 @@ def process_data(data):
         data for data in sections_list
         if not any(keyword in data for keyword in keywords_to_remove)
     ]
+
+    print(cleaned_data_list)
 
     def modify_string(data, keywords, attribute_name, slice_index):
         global_vars = globals()
@@ -71,10 +101,17 @@ def process_data(data):
         (['passes'], 'TemperatureEntrePasses', 30),
         (['Type'], 'Type', 5),
         (['Longueur'], 'Longueur', 68),
+        (['Nuance'], 'Nuance', 0),
+        (['DMOS'], 'DMOS', 8),
+        (['Autre'], 'Mail', 0),
+
+
     ]
 
     for keywords, attribute_name, slice_index in modifications:
         cleaned_data_list = [modify_string(data, keywords, attribute_name, slice_index) for data in cleaned_data_list]
+
+    print(cleaned_data_list)
 
     Courant = Courant[:2]
     Oxycoupage = Oxycoupage[:3]
@@ -82,7 +119,8 @@ def process_data(data):
     print(Imputation)
     print(QMOS)
     print(ProcedeSoudage)
-
+    print(Nuance)
+    Nuance = Nuance[9:]
     print(Diametre)
     print(round(len(Diametre)/2))
     n = round(len(Diametre)/2)
@@ -128,6 +166,7 @@ def process_data(data):
     print(len(Chaine))
     num = len(Chaine)/14
     num = int(num)
+
     def diviser_liste_en_n_groupes(liste, nombre_de_groupes):
         taille_du_groupe, reste = divmod(len(liste), nombre_de_groupes)
         return [liste[i * taille_du_groupe + min(i, reste):(i + 1) * taille_du_groupe + min(i + 1, reste)] for i in
@@ -147,6 +186,32 @@ def process_data(data):
     print(Type)
     print(Longueur)
 
+    all_text.append(Imputation)
+    all_text.append(DMOS)
+    all_text.append(QMOS)
+    all_text.append(Nuance)
+    # all_text.append(Nuance2)
+    all_text.append(ProcedeSoudage)
+    all_text.append(Diametre1)
+    all_text.append(Diametre2)
+    all_text.append(TypeJoint)
+    all_text.append(Epaisseur1)
+    all_text.append(Epaisseur2)
+    all_text.append(Pression)
+    all_text.append(Courant)
+    all_text.append(Meulage)
+    all_text.append(Etuvage)
+    all_text.append(Chanfrein)
+    all_text.append(Oxycoupage)
+    all_text.append(Sechage)
+    all_text.append(Prechauffage)
+    all_text.append(TemperatureEntrePasses)
+    all_text.append(Type)
+    all_text.append(Longueur)
+    all_text.append(Mail)
+
+
+
     # Retourner les valeurs extraites
 
 
@@ -155,3 +220,4 @@ data = """
 GRDF Materiau de pe Sheu Iqlu ole soudage Type Intensité (A) 415% GRDF DESCRIPTIF DE MODE OPERATOIRE DE SOUDAGE Imputation/EOTP V61DD-RD33 DMOS N' 2 Adresse du chantier RUE DE I'AGRICULTURE TARBES 65 base Elément 1 Elément 2 QMOS de Référence 378785-2011-27262 Nature TUBE ACIER REDUCTION ACIER Fabricant GRDF AMSG SO PAU Adresse 67 rue Gaston PLANTE 64140 LONS Nuance & Ancien tube GRDF 1/1.1 P26SGH 1/1.1 Grou acier Procédé de soudage 111 extérieur 70 mm 70 mm Type de joint Bout à Bout (BW) Pression maximale de service MPB Epaisseur 2.9 mm 2.9 mm Norme/spécif Année de pose 1960 NF EN 10253-2 Schéma de préparation Disposition et nombre de passes 60 à 80' 2,0à 3,0 mm 1,5 à2,5 mm Paramètre de Procédé 111 d'enrobage RUTILE Type de courant CC - 1 soudeur Passe N' de Réf. Commerciale du Polarité Designation du métal Position Vitesse (cm/min) Tension (V) Energie (Kj/cm) I'electrode métal d'apport électrode d'apport soudage 425% 415% 425% 1 2.5 SAFER GTI (E42) E42 0 RC 11 PH 4.03 22.6 65 17.49 2 2.5 SAFER GTI (E42) E42 0 RC 11 PH 7.73 22.6 65 9.12 Mode de préparation des extrémités Meulage Non Etuvage des électrodes Non Coordonnateur en soudage Chanfrein d'origine Oui Oxycoupage Non Frederic HERBAUT Conditions thermiques Séchage_ dégourdissage 70 C si T< 5 C Temperature de préchauffage ('C) Sans préchauffage Température entre passes ('C) maxi 155'C Direction Réseaux Moven d'accostage S0 Type CLAMP Longueur minimale soudée avant le retrait du dispositif d'accostage Lmini = 55 mm Autre information DAMBAX PIERRE pierre.dambax@grdf.fr V7.5 29/07/2024  AMSG SO - PAU 67 rue Gaston PLANTE 64140 LONS 
 """
 process_data(data)
+print(all_text)

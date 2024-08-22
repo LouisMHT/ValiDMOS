@@ -18,7 +18,7 @@ def scan_num(chemin_fichier):
     # Listes de mots-clés pour lesquels ajouter un espace avant, après, ou pour séparer
     keywords_to_add_space_after = ["DESCRIPTIF", "OPERATOIRE", "DMOS", "Matériau", "Adresse", "EOTP", ":",
                                    "chantier", "QMOS", "Procédé", "Nature", "Type", "Epaisseur", "Paramètre",
-                                   "Parametre", "1.1", "Température", "Temperature", "Pression", "maximale", "enrobage",
+                                   "Parametre", "1.1", "1.2", "Température", "Temperature", "Pression", "maximale", "enrobage",
                                    "Oui", "Non", "Meulage", "Etuvage", "Chanfrein", "origine", "accostage",
                                    "dispositif", "Oxycoupage", "mm", "cm"]
 
@@ -33,7 +33,7 @@ def scan_num(chemin_fichier):
     keywords_to_keep = ["Imputation", "EOTP", "DMOS", "QMOS", "1.1", "Procédé", "extérieur", "joint",
                         "Epaisseur", "Pression", "Paramètre", "Meulage", "Etuvage", "Chanfrein", "Oxycoupage",
                         "Séchage", "Sechage", "préchauffage", "prechauffage", "entre", "Température", "Temperature",
-                        "Type", "dispositif"]
+                        "Type", "dispositif", "Norme", "@"]
 
     # Créer un motif d'expression régulière pour séparer aux mots-clés
     pattern = r'({})'.format('|'.join(keywords_to_split))
@@ -61,6 +61,8 @@ def scan_num(chemin_fichier):
 
                 # Supprimer les espaces dans chaque chaîne de caractères fusionnée
                 cleaned_and_merged_table = [row.replace(" ", "") for row in merged_table]
+
+                print(cleaned_and_merged_table)
 
                 final_table = []
                 for row in cleaned_and_merged_table:
@@ -134,21 +136,31 @@ def scan_num(chemin_fichier):
         table[6] = table[6][16:]
         table[7] = table[7][10:]
         table[8] = table[8][31:]
-        table[9] = table[9][74:]
-        table[9] = table[9][:2]
-        table[10] = table[10][10:]
-        table[10] = table[10][:3]
-        table[11] = table[11][25:]
-        table[12] = table[12][22:]
-        table[12] = table[12][:3]
-        table[13] = table[13][13:]
+        table[9] = table[9].replace(" ", "")
+        table[9] = table[9][12:]
+        if "Année" in table[9]:
+            temp1 = table[9][:16]
+            temp2 = table[9][16:]
+            table[9] = temp1 + " " + temp2
+        else:
+            temp1 = table[9][:11]
+            temp2 = table[9][11:]
+            table[9] = temp1 + " " + temp2
+        table[10] = table[10][74:]
+        table[10] = table[10][:2]
+        table[11] = table[11][10:]
+        table[11] = table[11][:3]
+        table[12] = table[12][25:]
+        table[13] = table[13][22:]
         table[13] = table[13][:3]
-        table[14] = table[14][23:]
-        table[15] = table[15][32:]
-        table[16] = table[16][31:]
-        table[17] = table[17][7:]
-        table[18] = table[18][25:]
-        # print(table[18])
+        table[14] = table[14][13:]
+        table[14] = table[14][:3]
+        table[15] = table[15][23:]
+        table[16] = table[16][32:]
+        table[17] = table[17][31:]
+        table[18] = table[18][7:]
+        table[19] = table[19][25:]
+        print(table[20])
 
     for table in all_tables:
         final_table_2 = []
@@ -157,7 +169,7 @@ def scan_num(chemin_fichier):
             sections = row.split()
 
             final_table_2.extend(sections)
-        del final_table_2[-1]
+        del final_table_2[-2]
         all_tables_2.append(final_table_2)
 
     for table in all_tables_origin:
@@ -236,8 +248,6 @@ def scan_num(chemin_fichier):
         print(final_table_origin_2)
         print(final_table_origin_3)
         all_tables_origin_2.append(final_table_origin_3)
-
-
 
     for i, table in enumerate(all_tables_2):
         if table:  # Afficher seulement les tableaux non vides
